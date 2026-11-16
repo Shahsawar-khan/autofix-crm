@@ -24,10 +24,10 @@ class LeadTest extends TestCase
     public function test_fails_if_required_fields_are_missing()
     {
         $response = $this->postJson('/api/leads', [
-            'customer_name' => 'Ali'
+            'customer_name' => 'Ali' // Missing phone, vehicle, service
         ]);
 
-        $response->assertStatus(400)
+        $response->assertStatus(422) // <--- Yahan 422 kar dein
                  ->assertJsonPath('success', false)
                  ->assertJsonStructure(['errors' => ['phone', 'vehicle_info', 'service_needed']]);
     }

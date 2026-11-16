@@ -1,6 +1,9 @@
 # AutoFix Workshop - Sales CRM (Leads Backend)
 
-Backend API for AutoFix Workshop, built with Laravel.
+# AutoFix Workshop - Sales CRM (Leads Backend)
+
+This project is built using **PHP and Laravel** (not Node.js). 
+It uses Laravel's built-in validation, which returns **422 Unprocessable Entity** for failed validation requests.
 
 ## Setup & Run Instructions
 1. `composer install`

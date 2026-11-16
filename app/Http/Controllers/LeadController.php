@@ -27,9 +27,9 @@ class LeadController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validation Error: Please check your input format.',
+                'message' => 'Validation Error: Please check your input.',
                 'errors' => $validator->errors()
-            ], 400); 
+            ], 422); // <--- Yahan 400 ki jagah 422 kar dein
         }
 
         $lead = Lead::create($request->all());
