@@ -13,7 +13,7 @@ class LeadTest extends TestCase
     {
         $response = $this->postJson('/api/leads', [
             'customer_name' => 'Usman Tariq',
-            'phone' => '03451112223',
+            'phone' => '03001234567',
             'vehicle_info' => 'Kia Sportage 2022',
             'service_needed' => 'AC Gas Refill'
         ]);

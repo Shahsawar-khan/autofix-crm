@@ -16,17 +16,18 @@ class LeadController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+                $validator = Validator::make($request->all(), [
             'customer_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'vehicle_info' => 'required|string',
-            'service_needed' => 'required|string',
+            // Shape & Type check: Only digits, spaces, +, and - allowed. Max 20 chars.
+            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9\+\-\s]+$/'], 
+            'vehicle_info' => 'required|string|max:255',
+            'service_needed' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validation Error: Missing or invalid fields.',
+                'message' => 'Validation Error: Please check your input format.',
                 'errors' => $validator->errors()
             ], 400); 
         }
