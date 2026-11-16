@@ -21,14 +21,13 @@ class LeadTest extends TestCase
         $response->assertStatus(201)->assertJsonPath('success', true);
     }
 
-    public function test_fails_if_required_fields_are_missing()
+        public function test_fails_if_required_fields_are_missing()
     {
         $response = $this->postJson('/api/leads', [
-            'customer_name' => 'Ali' // Missing phone, vehicle, service
+            'customer_name' => 'Ali'
         ]);
 
-        $response->assertStatus(422) // <--- Yahan 422 kar dein
-                 ->assertJsonPath('success', false)
-                 ->assertJsonStructure(['errors' => ['phone', 'vehicle_info', 'service_needed']]);
+        $response->assertStatus(422) // Standard Laravel validation code
+                 ->assertJsonValidationErrors(['phone', 'vehicle_info', 'service_needed']); // Native assertion
     }
 }

@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lead;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreLeadRequest; // Import FormRequest
 
 class LeadController extends Controller
 {
@@ -14,25 +13,12 @@ class LeadController extends Controller
         return response()->json(['success' => true, 'data' => $leads], 200);
     }
 
-    public function store(Request $request)
+    // Yahan StoreLeadRequest inject ho gaya
+    public function store(StoreLeadRequest $request) 
     {
-                $validator = Validator::make($request->all(), [
-            'customer_name' => 'required|string|max:255',
-            // Shape & Type check: Only digits, spaces, +, and - allowed. Max 20 chars.
-            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9\+\-\s]+$/'], 
-            'vehicle_info' => 'required|string|max:255',
-            'service_needed' => 'required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation Error: Please check your input.',
-                'errors' => $validator->errors()
-            ], 422); // <--- Yahan 400 ki jagah 422 kar dein
-        }
-
-        $lead = Lead::create($request->all());
+        // Agar validation fail hui, toh Laravel khud 422 return kar dega.
+        // Humare paas yahan aayega sirf valid data.
+        $lead = Lead::create($request->validated());
 
         return response()->json([
             'success' => true,
