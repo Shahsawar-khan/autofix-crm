@@ -10,11 +10,11 @@ class LeadTest extends TestCase
     use RefreshDatabase;
 
         // Success Test
-    public function test_can_create_a_valid_lead()
+        public function test_can_create_a_valid_lead()
     {
         $response = $this->postJson('/api/leads', [
             'customer_name' => 'Usman Tariq',
-            'phone' => '03451112223',
+            'phone' => '0345-1112223', // Test with dashes
             'make' => 'Kia',
             'model' => 'Sportage',
             'year' => 2022,
@@ -23,6 +23,8 @@ class LeadTest extends TestCase
         ]);
 
         $response->assertStatus(201)->assertJsonPath('success', true);
+        // Verify normalized phone in DB
+        $this->assertDatabaseHas('contacts', ['phone' => '+923451112223']);
     }
 
     // Failure Test (Ab 4 errors aayenge)

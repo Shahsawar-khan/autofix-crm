@@ -44,3 +44,7 @@ The tests cover both the **main path** (successful lead creation) and the **fail
 ### 4. Contacts vs. Leads Normalization
 **Decision:** I separated the database into `contacts` (people) and `leads` (job enquiries). The `contacts` table enforces a `unique` constraint on the `phone` column. 
 **Trade-off:** This adds a slight complexity to the backend logic, as the controller must now perform a `firstOrCreate()` check to see if the customer exists before creating a new lead. However, the benefit is eliminating duplicate customer data. A repeat customer coming for a second repair will have their new job linked to their existing contact profile, enabling a full vehicle and service history view in the future.
+
+### 5. Phone Number Normalization
+**Decision:** Before hitting the database or validation rules, phone numbers are normalized using `prepareForValidation()` in the FormRequest. The system strips all spaces, dashes, and brackets, and converts local formats (e.g., `0300-1234567`) to a standard international E.164 format (e.g., `+923001234567`).
+**Trade-off:** This guarantees that the `unique` constraint on `contacts.phone` catches duplicates regardless of how the user types the number. The trade-off is that the normalization logic currently hardcodes the `+92` country code for local numbers. If AutoFix Workshop starts taking international clients who type their own country codes, we may need to implement a more complex library (like `libphonenumber`) to handle global formats flawlessly.
