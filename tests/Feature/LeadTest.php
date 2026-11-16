@@ -34,26 +34,21 @@ class LeadTest extends TestCase
     // ==========================================
     // 2. FAILURE PATH (Mentor ki Demand)
     // ==========================================
+        // ==========================================
+    // 2. FAILURE PATH (Mentor's refined advice)
+    // ==========================================
     public function test_fails_with_clear_errors_when_phone_is_empty_and_name_is_missing()
     {
-        // Hum 'customer_name' nahi bhej rahe (missing) aur 'phone' khali string bhej rahe hain
+        // 'customer_name' and 'phone' are sent as empty strings
         $response = $this->postJson('/api/leads', [
             'customer_name' => '', 
             'phone' => '',         
             'make' => 'Honda',     
-            // model, year, license_plate, service_needed missing
         ]);
 
-        // 1. Check status code (422 Unprocessable Entity)
+        // Just assert the 422 status and that the keys exist in the errors array.
+        // We no longer pin the exact message text.
         $response->assertStatus(422)
-                 
-                 // 2. Check ke exact fields mein validation error aya hai
-                 ->assertJsonValidationErrors(['customer_name', 'phone', 'model', 'year', 'license_plate', 'service_needed'])
-                 
-                 // 3. Check exact JSON response structure (Mentor ki specific demand)
-                 ->assertJsonFragment([
-                     'customer_name' => ['The customer name field is required.'],
-                     'phone' => ['The phone field is required.'],
-                 ]);
+                 ->assertJsonValidationErrors(['customer_name', 'phone', 'model', 'year', 'license_plate', 'service_needed']);
     }
 }
