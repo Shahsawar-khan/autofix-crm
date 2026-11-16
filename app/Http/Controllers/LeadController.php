@@ -14,16 +14,27 @@ class LeadController extends Controller
     }
 
     // Yahan StoreLeadRequest inject ho gaya
-    public function store(StoreLeadRequest $request) 
+        public function store(StoreLeadRequest $request) 
     {
-        // Agar validation fail hui, toh Laravel khud 422 return kar dega.
-        // Humare paas yahan aayega sirf valid data.
-        $lead = Lead::create($request->validated());
+        // Check if contact exists by phone, otherwise create it
+        $contact = \App\Models\Contact::firstOrCreate(
+            ['phone' => $request->phone],
+            ['name' => $request->customer_name]
+        );
+
+        // Create lead attached to this contact
+        $lead = $contact->leads()->create([
+            'make' => $request->make,
+            'model' => $request->model,
+            'year' => $request->year,
+            'license_plate' => $request->license_plate,
+            'service_needed' => $request->service_needed,
+        ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Lead created successfully!',
-            'data' => $lead
+            'data' => $lead->load('contact') // Load contact details
         ], 201);
     }
 }

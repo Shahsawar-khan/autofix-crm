@@ -40,3 +40,7 @@ The tests cover both the **main path** (successful lead creation) and the **fail
 ### 3. Vehicle Data Modeling
 **Decision:** Instead of storing vehicle information as a single free-text string (e.g., "Honda Civic 2018"), I split it into structured columns: `make`, `model`, `year`, and `license_plate`.
 **Trade-off:** This requires the client to fill in more specific fields during lead capture, slightly increasing input friction. However, the benefit is massive: the pipeline board and future job cards can now efficiently filter and group jobs by car make (e.g., all Hondas) or find a specific car by license plate. A single string would have made this impossible.
+
+### 4. Contacts vs. Leads Normalization
+**Decision:** I separated the database into `contacts` (people) and `leads` (job enquiries). The `contacts` table enforces a `unique` constraint on the `phone` column. 
+**Trade-off:** This adds a slight complexity to the backend logic, as the controller must now perform a `firstOrCreate()` check to see if the customer exists before creating a new lead. However, the benefit is eliminating duplicate customer data. A repeat customer coming for a second repair will have their new job linked to their existing contact profile, enabling a full vehicle and service history view in the future.

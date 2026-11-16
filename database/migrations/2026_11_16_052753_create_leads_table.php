@@ -6,13 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+           public function up(): void
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
-            $table->string('customer_name');
-            $table->string('phone');
-            $table->string('vehicle_info');
+            // Link to Contact
+            $table->foreignId('contact_id')->constrained()->onDelete('cascade'); 
+            
+            $table->string('make');
+            $table->string('model');
+            $table->integer('year');
+            $table->string('license_plate');
             $table->string('service_needed');
             $table->timestamps();
         });

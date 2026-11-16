@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Lead extends Model
 {
     use HasFactory;
-
+    
     protected $fillable = [
-        'customer_name',
-        'phone',
-        'vehicle_info',
-        'service_needed',
+        'contact_id', 'make', 'model', 'year', 'license_plate', 'service_needed'
     ];
+
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
 }
