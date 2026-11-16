@@ -12,22 +12,22 @@ class StoreLeadRequest extends FormRequest
     }
 
     // Yahan hum phone number ko normalize kar rahe hain
-    protected function prepareForValidation()
+        protected function prepareForValidation()
     {
         if ($this->has('phone')) {
-            // 1. Remove everything except digits and the + sign
+            // Strip everything except digits and +
             $phone = preg_replace('/[^\d+]/', '', $this->phone);
 
-            // 2. Convert local formats to international (+92 for Pakistan)
+            // Only convert if it starts with '0' (assumed to be local Pakistani format)
             if (str_starts_with($phone, '0')) {
                 $phone = '+92' . substr($phone, 1);
-            } elseif (str_starts_with($phone, '92')) {
-                $phone = '+' . $phone;
-            } elseif (str_starts_with($phone, '3') && strlen($phone) == 10) {
+            } 
+            // If it starts with '+', leave it as is (foreign number)
+            // If it's just 10 digits starting with 3, we can optionally assume it's local
+            elseif (str_starts_with($phone, '3') && strlen($phone) == 10) {
                 $phone = '+92' . $phone;
             }
 
-            // 3. Merge it back into the request
             $this->merge(['phone' => $phone]);
         }
     }
