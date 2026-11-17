@@ -42,7 +42,7 @@
             @endphp
 
             @foreach($statuses as $status)
-                @php $statusName = $status->value; @endphp <!-- Enum se value nikal rahe hain -->
+                @php $statusName = $status->value; @endphp
                 
                 <div class="bg-white rounded-xl flex flex-col border border-slate-200 border-t-4 {{ $colors[$statusName] ?? 'border-gray-400' }} shadow-sm h-full max-h-[80vh]">
                     
@@ -57,29 +57,40 @@
                     <!-- Drop Zone -->
                     <div class="flex-1 overflow-y-auto p-3 space-y-3 min-h-[200px]" data-status="{{ $statusName }}">
                         @foreach($leads as $lead)
-                            <!-- Lead ka status bhi ab Enum hai, isliye ->value use kar rahe hain -->
                             @if($lead->status->value === $statusName)
-                                <!-- Card -->
-                                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 cursor-grab active:cursor-grabbing hover:shadow-md transition-all group" data-id="{{ $lead->id }}">
+                                <!-- ========================================== -->
+                                <!-- UPDATED CARD DESIGN                         -->
+                                <!-- ========================================== -->
+                                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 cursor-grab active:cursor-grabbing hover:shadow-md hover:border-blue-300 transition-all group" data-id="{{ $lead->id }}">
                                     
+                                    <!-- Customer Name & Plate -->
                                     <div class="flex justify-between items-start mb-3">
-                                        <div class="font-bold text-slate-800 text-sm group-hover:text-blue-600 transition">{{ $lead->contact->name }}</div>
-                                        <div class="text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-1 rounded">{{ $lead->license_plate }}</div>
+                                        <div class="font-bold text-slate-900 text-base group-hover:text-blue-600 transition">
+                                            {{ $lead->contact->name }}
+                                        </div>
+                                        <div class="text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-1 rounded">
+                                            {{ $lead->license_plate }}
+                                        </div>
                                     </div>
                                     
-                                    <div class="text-xs text-slate-500 mb-3 flex items-center gap-1">
+                                    <!-- Vehicle Info -->
+                                    <div class="text-[13px] text-slate-600 mb-3 flex items-center gap-1.5 font-medium">
                                         🚗 {{ $lead->make }} {{ $lead->model }} ({{ $lead->year }})
                                     </div>
                                     
-                                    <div class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-100 font-medium">
-                                        🔧 {{ $lead->service_needed }}
+                                    <!-- Service Needed (Highlighted) -->
+                                    <div class="text-xs text-blue-800 bg-blue-50 p-2.5 rounded-md border border-blue-100 font-semibold flex items-center gap-2">
+                                        <span>🔧</span>
+                                        {{ $lead->service_needed }}
                                     </div>
 
-                                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-                                        <span>📞 {{ $lead->contact->phone }}</span>
-                                        <span>#{{ $lead->id }}</span>
+                                    <!-- Footer: Phone & ID -->
+                                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                                        <span class="flex items-center gap-1">📞 {{ $lead->contact->phone }}</span>
+                                        <span class="text-slate-400">#{{ $lead->id }}</span>
                                     </div>
                                 </div>
+                                <!-- ========================================== -->
                             @endif
                         @endforeach
                     </div>

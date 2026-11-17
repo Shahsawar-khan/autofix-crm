@@ -42,9 +42,9 @@ class LeadController extends Controller
 
     public function updateStatus(Request $request, Lead $lead)
     {
-        // Validation ab Enum se values utha rahi hai
+        // Cleaner validation using Rule::enum
         $request->validate([
-            'status' => ['required', 'string', Rule::in(LeadStatus::values())]
+            'status' => ['required', Rule::enum(LeadStatus::class)]
         ]);
 
         $lead->update(['status' => $request->status]);
