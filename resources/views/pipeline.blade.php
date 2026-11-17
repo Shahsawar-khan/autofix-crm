@@ -113,6 +113,9 @@
                 animation: 150,
                 ghostClass: 'bg-blue-100',
                 dragClass: 'rotate-2',
+                fallbackOnBody: true,  // <-- Ye 3 lines add karein (Offset fix)
+                swapThreshold: 0.65,   // <-- Drop detection behtar karta hai
+                scroll: true,          // <-- Drag karte waqt scroll allow karta hai
                 onEnd: async function (evt) {
                     const leadId = evt.item.getAttribute('data-id');
                     const newStatus = evt.to.getAttribute('data-status');
