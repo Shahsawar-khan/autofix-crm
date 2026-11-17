@@ -27,9 +27,8 @@
         </div>
     </nav>
 
-    <!-- Board Container (CSS Grid Use kiya hai taake horizontal scroll khatam ho) -->
+    <!-- Board Container -->
     <div class="max-w-[1600px] mx-auto px-4 py-6 flex-1 w-full overflow-y-auto">
-        <!-- Grid: Screen par 5 columns barabar fit honge -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 h-full items-start">
             
             @php
@@ -43,20 +42,23 @@
             @endphp
 
             @foreach($statuses as $status)
-                <div class="bg-white rounded-xl flex flex-col border border-slate-200 border-t-4 {{ $colors[$status] ?? 'border-gray-400' }} shadow-sm h-full max-h-[80vh]">
+                @php $statusName = $status->value; @endphp <!-- Enum se value nikal rahe hain -->
+                
+                <div class="bg-white rounded-xl flex flex-col border border-slate-200 border-t-4 {{ $colors[$statusName] ?? 'border-gray-400' }} shadow-sm h-full max-h-[80vh]">
                     
                     <!-- Column Header -->
                     <div class="p-4 flex justify-between items-center bg-slate-50/50 rounded-t-lg border-b border-slate-100">
-                        <h2 class="font-bold text-gray-700 uppercase text-xs tracking-wider">{{ $status }}</h2>
+                        <h2 class="font-bold text-gray-700 uppercase text-xs tracking-wider">{{ $statusName }}</h2>
                         <span class="bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full text-xs font-bold">
-                            {{ $leads->where('status', $status)->count() }}
+                            {{ $leads->where('status', $statusName)->count() }}
                         </span>
                     </div>
                     
                     <!-- Drop Zone -->
-                    <div class="flex-1 overflow-y-auto p-3 space-y-3 min-h-[200px]" data-status="{{ $status }}">
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3 min-h-[200px]" data-status="{{ $statusName }}">
                         @foreach($leads as $lead)
-                            @if($lead->status === $status)
+                            <!-- Lead ka status bhi ab Enum hai, isliye ->value use kar rahe hain -->
+                            @if($lead->status->value === $statusName)
                                 <!-- Card -->
                                 <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 cursor-grab active:cursor-grabbing hover:shadow-md transition-all group" data-id="{{ $lead->id }}">
                                     

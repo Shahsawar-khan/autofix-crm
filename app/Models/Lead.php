@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\LeadStatus; // Enum Import kiya
 
 class Lead extends Model
 {
@@ -16,10 +17,14 @@ class Lead extends Model
         'year',
         'license_plate',
         'service_needed',
-        'status', // Naya column Task 2 ke liye
+        'status',
     ];
 
-    // Relationship: Ek Lead ek Contact se juda hua hai
+    // Enum Casting (Single source of truth)
+    protected $casts = [
+        'status' => LeadStatus::class,
+    ];
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);

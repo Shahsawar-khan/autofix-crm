@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeadController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/pipeline');
 });
 
 Route::get('/pipeline', [LeadController::class, 'board']);

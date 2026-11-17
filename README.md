@@ -55,3 +55,7 @@ The tests cover both the **main path** (successful lead creation) and the **fail
 
 #### Known Limitation (Drag-and-Drop Revert)
 **Limitation:** If the API call fails during a drag-and-drop action, the UI correctly reverts the card to its original column and shows an error toast. However, because it uses `evt.from.appendChild(evt.item)`, the card is placed at the **bottom** of the original column, not at its exact previous index. For this task, it is acceptable, but a future iteration will use `evt.oldIndex` to reinsert the card at its exact previous position.
+
+### 7. Single Source of Truth for Statuses (PHP Enum)
+**Decision:** I used a PHP Enum (`App\Enums\LeadStatus`) as the single source of truth for pipeline stages. Both the validation rules and the UI board read directly from this Enum.
+**Trade-off:** This prevents mismatch bugs (e.g., adding a stage to the UI but forgetting to add it to validation) and allows for static analysis. The trade-off is a slight increase in indirection; developers must now look at the Enum class to understand the pipeline flow, rather than just a simple hardcoded array.

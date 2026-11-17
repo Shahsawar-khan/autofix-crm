@@ -6,17 +6,17 @@ use App\Models\Lead;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreLeadRequest;
+use App\Enums\LeadStatus; // Enum Import kiya
+use Illuminate\Validation\Rule; // Rule Import kiya
 
 class LeadController extends Controller
 {
-    // Get all leads
     public function index()
     {
         $leads = Lead::with('contact')->latest()->get();
         return response()->json(['success' => true, 'data' => $leads], 200);
     }
 
-    // Create a new lead
     public function store(StoreLeadRequest $request) 
     {
         $contact = Contact::firstOrCreate(
@@ -30,7 +30,7 @@ class LeadController extends Controller
             'year' => $request->year,
             'license_plate' => $request->license_plate,
             'service_needed' => $request->service_needed,
-            'status' => 'New', // Default status
+            'status' => LeadStatus::NEW->value, // Enum use kiya
         ]);
 
         return response()->json([
@@ -40,12 +40,11 @@ class LeadController extends Controller
         ], 201);
     }
 
-    // Update lead status (Yeh function missing tha)
     public function updateStatus(Request $request, Lead $lead)
     {
-        // Validation: Sirf inhi statuses ko allow karenge
+        // Validation ab Enum se values utha rahi hai
         $request->validate([
-            'status' => 'required|string|in:New,Quoted,Booked,In Repair,Completed'
+            'status' => ['required', 'string', Rule::in(LeadStatus::values())]
         ]);
 
         $lead->update(['status' => $request->status]);
@@ -57,11 +56,13 @@ class LeadController extends Controller
         ], 200);
     }
 
-        // Pipeline Board View
     public function board()
     {
         $leads = Lead::with('contact')->get();
-        $statuses = ['New', 'Quoted', 'Booked', 'In Repair', 'Completed'];
+        
+        // Board ab Enum cases utha raha hai (Single source of truth)
+        $statuses = LeadStatus::cases(); 
+        
         return view('pipeline', compact('leads', 'statuses'));
     }
 }
