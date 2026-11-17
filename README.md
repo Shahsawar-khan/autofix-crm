@@ -52,3 +52,6 @@ The tests cover both the **main path** (successful lead creation) and the **fail
 ### 6. Pipeline Board UI (Task 2 Decision)
 **Decision:** I implemented the pipeline board using native Laravel Blade, Tailwind CSS (via CDN), and SortableJS for drag-and-drop functionality. I chose native JavaScript `fetch` instead of a heavy framework like React/Vue for this specific view.
 **Trade-off:** This approach is extremely lightweight, requires zero build tools (npm/webpack), and the client can run it instantly. However, the trade-off is that if an API call fails (e.g., network error), we have to manually handle DOM state reversion in JavaScript to keep the UI in sync with the database. A framework like React would handle this state sync automatically, but would add significant setup complexity.
+
+#### Known Limitation (Drag-and-Drop Revert)
+**Limitation:** If the API call fails during a drag-and-drop action, the UI correctly reverts the card to its original column and shows an error toast. However, because it uses `evt.from.appendChild(evt.item)`, the card is placed at the **bottom** of the original column, not at its exact previous index. For this task, it is acceptable, but a future iteration will use `evt.oldIndex` to reinsert the card at its exact previous position.
