@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::get('/pipeline', [LeadController::class, 'board']);
+Route::get('/reminders', [App\Http\Controllers\LeadController::class, 'reminders']);

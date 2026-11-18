@@ -18,11 +18,14 @@ class Lead extends Model
         'license_plate',
         'service_needed',
         'status',
+        'follow_up_date',   // <-- Naya
+        'follow_up_notes',  // <-- Naya
     ];
 
     // Enum Casting (Single source of truth)
     protected $casts = [
         'status' => LeadStatus::class,
+        'follow_up_date' => 'date', // <-- Date cast kiya taake Carbon object milay
     ];
 
     public function contact()

@@ -66,3 +66,7 @@ The tests cover:
 ### 6. Single Source of Truth for Statuses (PHP Enum)
 **Decision:** I used a PHP Enum (`App\Enums\LeadStatus`) as the single source of truth for pipeline stages. Both the validation rules and the UI board read directly from this Enum.
 **Trade-off:** This prevents mismatch bugs and allows for static analysis. The trade-off is a slight increase in indirection; developers must look at the Enum class to understand the pipeline flow.
+
+### 8. Follow-up Reminders Architecture (Task 3 Decision)
+**Decision:** I added `follow_up_date` and `follow_up_notes` directly to the `leads` table instead of creating a separate `reminders` table. I also built a dedicated `/reminders` dashboard that categorizes leads into Overdue (Red), Today (Yellow), and Upcoming (Green).
+**Trade-off:** Keeping the reminder data within the `leads` table simplifies the queries and makes it instantly accessible on the pipeline board. The trade-off is that this system only supports **one active reminder per lead**. If a workshop manager wants to set multiple reminders for a single vehicle (e.g., one for a quote follow-up and another for a service due date), we will have to migrate to a separate `reminders` table with a `hasMany` relationship in the future.

@@ -23,6 +23,7 @@
             <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
                 <span class="text-blue-600">AutoFix</span> Workshop Pipeline
             </h1>
+            <a href="/reminders" class="text-sm font-semibold text-orange-600 hover:text-orange-800 bg-orange-50 px-4 py-2 rounded-lg transition">⏰ View Reminders</a>
             <a href="/api/leads" target="_blank" class="text-sm font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-lg transition">View API JSON</a>
         </div>
     </nav>

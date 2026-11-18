@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreLeadRequest;
 use App\Enums\LeadStatus; // Enum Import kiya
 use Illuminate\Validation\Rule; // Rule Import kiya
+use App\Http\Requests\UpdateFollowUpRequest;
 
 class LeadController extends Controller
 {
@@ -64,5 +65,30 @@ class LeadController extends Controller
         $statuses = LeadStatus::cases(); 
         
         return view('pipeline', compact('leads', 'statuses'));
+    }
+
+        public function reminders()
+    {
+        $leads = Lead::with('contact')->whereNotNull('follow_up_date')->get();
+        
+        // Leads ko 3 categories mein divide kar rahe hain
+        $overdue = $leads->where('follow_up_date', '<', today())->sortBy('follow_up_date');
+        $today = $leads->where('follow_up_date', '==', today());
+        $upcoming = $leads->where('follow_up_date', '>', today())->sortBy('follow_up_date');
+
+        return view('reminders', compact('overdue', 'today', 'upcoming'));
+    }
+    public function updateFollowUp(UpdateFollowUpRequest $request, Lead $lead)
+    {
+        $lead->update([
+            'follow_up_date' => $request->follow_up_date,
+            'follow_up_notes' => $request->follow_up_notes,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Follow-up reminder set successfully',
+            'data' => $lead
+        ], 200);
     }
 }

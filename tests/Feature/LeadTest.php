@@ -100,4 +100,48 @@ class LeadTest extends TestCase
         $response->assertStatus(422)
                  ->assertJsonValidationErrors(['status']);
     }
+
+        // ==========================================
+    // TASK 3: MAIN PATH (Set Follow-up Reminder)
+    // ==========================================
+    public function test_can_set_follow_up_reminder()
+    {
+        $contact = \App\Models\Contact::create(['name' => 'Test User', 'phone' => '+923009998877']);
+        $lead = $contact->leads()->create([
+            'make' => 'Honda', 'model' => 'Civic', 'year' => 2021, 'license_plate' => 'TST-999', 'service_needed' => 'Oil Change', 'status' => 'New'
+        ]);
+
+        // Future date bhej rahe hain
+        $futureDate = now()->addDays(2)->format('Y-m-d');
+
+        $response = $this->patchJson("/api/leads/{$lead->id}/follow-up", [
+            'follow_up_date' => $futureDate,
+            'follow_up_notes' => 'Customer ko quote confirm karwana hai'
+        ]);
+
+        $response->assertStatus(200)->assertJsonPath('success', true);
+        $this->assertDatabaseHas('leads', ['id' => $lead->id, 'follow_up_date' => $futureDate . ' 00:00:00']);
+    }
+
+    // ==========================================
+    // TASK 3: FAILURE PATH (Past Date Validation)
+    // ==========================================
+    public function test_fails_to_set_past_follow_up_date()
+    {
+        $contact = \App\Models\Contact::create(['name' => 'Test User 2', 'phone' => '+923008887766']);
+        $lead = $contact->leads()->create([
+            'make' => 'Toyota', 'model' => 'Yaris', 'year' => 2020, 'license_plate' => 'TST-888', 'service_needed' => 'AC Repair', 'status' => 'New'
+        ]);
+
+        // Past date bhej rahe hain (jo fail honi chahiye)
+        $pastDate = now()->subDays(1)->format('Y-m-d');
+
+        $response = $this->patchJson("/api/leads/{$lead->id}/follow-up", [
+            'follow_up_date' => $pastDate,
+        ]);
+
+        // 422 error aana chahiye kyunke past date allow nahi hai
+        $response->assertStatus(422)
+                 ->assertJsonValidationErrors(['follow_up_date']);
+    }
 }

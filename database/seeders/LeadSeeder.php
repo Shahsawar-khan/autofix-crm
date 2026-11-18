@@ -38,14 +38,26 @@ class LeadSeeder extends Seeder
             ['name' => 'Mehwish Hayat', 'phone' => '+923467778811', 'make' => 'Kia', 'model' => 'Sportage', 'year' => 2021, 'plate' => 'KHI-1122', 'job' => 'Brake Fluid Flush', 'status' => LeadStatus::COMPLETED],
         ];
 
-        foreach ($leadsData as $data) {
-            // Contact create ya fetch karein
+        foreach ($leadsData as $index => $data) {
             $contact = Contact::firstOrCreate(
                 ['phone' => $data['phone']],
                 ['name' => $data['name']]
             );
 
-            // Lead create karein
+            $followUpDate = null;
+            $followUpNote = null;
+
+            if ($index % 3 == 0) {
+                $followUpDate = now()->subDays(2)->format('Y-m-d');
+                $followUpNote = 'Customer ko call kiya tha, response nahi aya. Dobara call karein.';
+            } elseif ($index % 3 == 1) {
+                $followUpDate = now()->format('Y-m-d');
+                $followUpNote = 'Aaj shaam 5 baje quote confirm karna hai.';
+            } else {
+                $followUpDate = now()->addDays(3)->format('Y-m-d');
+                $followUpNote = 'Parts ki availability check karni hai.';
+            }
+
             $contact->leads()->create([
                 'make' => $data['make'],
                 'model' => $data['model'],
@@ -53,6 +65,8 @@ class LeadSeeder extends Seeder
                 'license_plate' => $data['plate'],
                 'service_needed' => $data['job'],
                 'status' => $data['status'],
+                'follow_up_date' => $followUpDate,
+                'follow_up_notes' => $followUpNote,
             ]);
         }
     }
