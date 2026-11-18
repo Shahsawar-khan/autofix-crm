@@ -47,8 +47,11 @@ class LeadSeeder extends Seeder
             $followUpDate = null;
             $followUpNote = null;
 
-            if ($index % 3 == 0) {
-                $followUpDate = now()->subDays(2)->format('Y-m-d');
+            if ($index % 4 == 0) {
+                $followUpDate = null; // Unscheduled
+                $followUpNote = 'Call not scheduled yet.';
+            } elseif ($index % 3 == 0) {
+                $followUpDate = now()->subDays(2)->format('Y-m-d'); // Overdue
                 $followUpNote = 'Customer ko call kiya tha, response nahi aya. Dobara call karein.';
             } elseif ($index % 3 == 1) {
                 $followUpDate = now()->format('Y-m-d');

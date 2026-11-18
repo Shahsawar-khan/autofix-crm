@@ -67,16 +67,38 @@ class LeadController extends Controller
         return view('pipeline', compact('leads', 'statuses'));
     }
 
-        public function reminders()
+           public function reminders()
     {
-        $leads = Lead::with('contact')->whereNotNull('follow_up_date')->get();
-        
-        // Leads ko 3 categories mein divide kar rahe hain
-        $overdue = $leads->where('follow_up_date', '<', today())->sortBy('follow_up_date');
-        $today = $leads->where('follow_up_date', '==', today());
-        $upcoming = $leads->where('follow_up_date', '>', today())->sortBy('follow_up_date');
+        // 1. Overdue (Date is less than today)
+        $overdue = Lead::with('contact')
+            ->whereNotNull('follow_up_date')
+             ->where('follow_up_completed', false)
+            ->whereDate('follow_up_date', '<', now()->toDateString())
+            ->orderBy('follow_up_date', 'asc')
+            ->get();
 
-        return view('reminders', compact('overdue', 'today', 'upcoming'));
+        // 2. Today (Date is exactly today)
+        $today = Lead::with('contact')
+             ->where('follow_up_completed', false)
+            ->whereDate('follow_up_date', now()->toDateString())
+            ->orderBy('follow_up_date', 'asc')
+            ->get();
+
+        // 3. Upcoming (Date is greater than today)
+        $upcoming = Lead::with('contact')
+             ->where('follow_up_completed', false)
+            ->whereDate('follow_up_date', '>', now()->toDateString())
+            ->orderBy('follow_up_date', 'asc')
+            ->get();
+
+        // 4. Unscheduled (No date set - Mentor ki demand)
+        $unscheduled = Lead::with('contact')
+            ->whereNull('follow_up_date')
+             ->where('follow_up_completed', false)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('reminders', compact('overdue', 'today', 'upcoming', 'unscheduled'));
     }
     public function updateFollowUp(UpdateFollowUpRequest $request, Lead $lead)
     {
@@ -89,6 +111,17 @@ class LeadController extends Controller
             'success' => true,
             'message' => 'Follow-up reminder set successfully',
             'data' => $lead
+        ], 200);
+    }
+           public function completeFollowUp(Lead $lead)
+    {
+        // Direct save instead of update() to avoid fillable issues
+        $lead->follow_up_completed = true; 
+        $lead->save(); 
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Follow-up marked as completed'
         ], 200);
     }
 }
