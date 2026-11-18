@@ -156,7 +156,7 @@ class LeadTest extends TestCase
         // 1. Set follow-up date to yesterday (Overdue)
         $lead = $contact->leads()->create([
             'make' => 'Honda', 'model' => 'Civic', 'year' => 2020, 'license_plate' => 'OVD-001', 'service_needed' => 'Oil Change', 'status' => 'New',
-            'follow_up_date' => now()->subDay()->format('Y-m-d'),
+            'follow_up_date' => today()->subDay()->format('Y-m-d'),
             'follow_up_completed' => false
         ]);
 

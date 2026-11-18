@@ -70,8 +70,8 @@ The tests cover:
 **Trade-off:** This prevents mismatch bugs and allows for static analysis. The trade-off is a slight increase in indirection; developers must look at the Enum class to understand the pipeline flow.
 
 ### 7. Follow-up Reminders Architecture (Task 3 Decision)
-**Decision:** Reminders are stored in the `leads` table, grouped at the Database level using SQL `whereDate` and an index on `follow_up_date`. To mark a call as done, I added a boolean `follow_up_completed`. I built a 4-column dashboard (Overdue, Today, Upcoming, Unscheduled).
-**Trade-off (The History Gap):** Using a boolean is lightweight and perfect for showing active reminders. The cost, however, is that we lose history. Once a lead is marked as done, we only know the *current* status, not the full timeline of past calls. If AutoFix Workshop needs a full interaction log, this boolean approach will not scale, and we will need to migrate to a `follow_up_logs` table (One-to-Many relationship) in a future iteration.
+**Decision:** I chose to store reminders directly in the `leads` table using a boolean `follow_up_completed`, rather than creating a separate `follow_up_logs` table. I also used a database index on `follow_up_date` and SQL `whereDate` for filtering.
+**Trade-off:** This approach is extremely fast and keeps the code simple, but the **cost is that we lose history**. Once a lead is marked as done, we only know the current status, not the full timeline of past calls. If AutoFix Workshop requires a full interaction log in the future, we will have to migrate to a separate logs table.
 
 #### Security Note (IDOR Protection)
 **Note:** The API routes (e.g., `/follow-up/complete`) accept the lead ID directly from the URL. To prevent unauthorized access or crashes from invalid IDs, the controller uses Laravel's **Route Model Binding** (`Lead $lead`). This automatically returns a **404 Not Found** if the ID does not exist. In a future task with authentication, we will scope this further so users can only modify their own leads.
