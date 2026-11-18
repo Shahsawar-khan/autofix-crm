@@ -1,11 +1,11 @@
-# AutoFix Workshop - Sales CRM (Backend & Pipeline Board)
+# AutoFix Workshop - Sales CRM (Backend, Pipeline & Reminders)
 
 This is the Sales CRM for AutoFix Workshop, built using **PHP and Laravel**. The application uses Laravel's built-in validation, which returns standard **422 Unprocessable Entity** responses for failed validation requests. 
 
 ## Tech Stack
 - **Framework:** Laravel (PHP)
 - **Database:** SQLite (Chosen for zero-configuration local setup)
-- **Frontend (Task 2):** Laravel Blade, Tailwind CSS, SortableJS
+- **Frontend:** Laravel Blade, Tailwind CSS, SortableJS
 - **Testing:** PHPUnit (Laravel's default)
 
 ## Setup & Run Instructions
@@ -16,21 +16,23 @@ This is the Sales CRM for AutoFix Workshop, built using **PHP and Laravel**. The
    - On Mac/Linux: `touch database/database.sqlite`
    - On Windows: `type nul > database/database.sqlite`
 5. Run migrations and seed the realistic workshop data: `php artisan migrate:fresh --seed`
-   *(This will seed 15 realistic workshop leads spread across all 5 pipeline stages).*
+   *(This seeds 15 realistic workshop leads spread across all 5 pipeline stages, including some with and without follow-up dates).*
 6. Start the server: `php artisan serve` (Runs on http://127.0.0.1:8000)
 7. Open the Pipeline Board: `http://127.0.0.1:8000/pipeline`
+8. Open the Follow-up Reminders: `http://127.0.0.1:8000/reminders`
 
 ## How to Test
 Run `php artisan test` to execute the test suite. 
 The tests cover:
-- **Main Path:** Successful lead creation, status update, and valid data handling.
-- **Failure Path:** Missing/invalid fields returning a 422 status with specific error messages, and invalid status transitions.
-*(You can also test the failure path manually by sending an invalid status via curl).*
+- **Main Paths:** Successful lead creation, pipeline status updates, and setting follow-up reminders.
+- **Failure Paths:** Missing/invalid fields returning a 422 status, invalid status transitions, and setting past dates for follow-ups.
 
 ## API Endpoints
 - `GET /api/leads` - Fetch all leads.
-- `POST /api/leads` - Create a new lead (Requires JSON body with `customer_name`, `phone`, `make`, `model`, `year`, `license_plate`, and `service_needed`).
-- `PATCH /api/leads/{lead}/status` - Update a lead's pipeline status (Requires JSON body with `status`).
+- `POST /api/leads` - Create a new lead.
+- `PATCH /api/leads/{lead}/status` - Update a lead's pipeline status.
+- `PATCH /api/leads/{lead}/follow-up` - Set or update a follow-up date and note.
+- `PATCH /api/leads/{lead}/follow-up/complete` - Mark a follow-up as completed (using the boolean flag).
 
 ---
 
@@ -49,12 +51,12 @@ The tests cover:
 **Trade-off:** This requires the client to fill in more specific fields during lead capture, slightly increasing input friction. However, the pipeline board and future job cards can now efficiently filter and group jobs by car make or find a specific car by license plate.
 
 ### 4. Phone Number Normalization
-**Decision:** Before hitting the database or validation rules, phone numbers are normalized using `prepareForValidation()`. The system strips spaces and dashes. It only converts the number to the `+92` international format **if the number starts with `0`** (assumed local format). If it starts with a `+`, it is left untouched.
+**Decision:** Before hitting the database or validation rules, phone numbers are normalized using `prepareForValidation()`. The system strips spaces and dashes. It only converts the number to the `+92` international format **if the number starts with `0`**. If it starts with a `+`, it is left untouched.
 **Trade-off:** This prevents mangling foreign phone numbers. The trade-off is that a local user must type their number with a leading `0` or `+92`; if they just type `3001234567`, it might fail validation.
 
 ### 5. Pipeline Board UI (Task 2 Decision)
-**Decision:** I implemented the pipeline board using native Laravel Blade, Tailwind CSS, and SortableJS for drag-and-drop functionality. I chose native JavaScript `fetch` instead of a heavy framework like React/Vue for this specific view.
-**Trade-off:** This approach is extremely lightweight, requires zero build tools, and the client can run it instantly. However, if an API call fails (e.g., network error), we have to manually handle DOM state reversion in JavaScript to keep the UI in sync with the database. A framework like React would handle this automatically.
+**Decision:** I implemented the pipeline board using native Laravel Blade, Tailwind CSS, and SortableJS. I chose native JavaScript `fetch` instead of a heavy framework like React/Vue.
+**Trade-off:** This approach is extremely lightweight, requires zero build tools, and the client can run it instantly. However, if an API call fails, we have to manually handle DOM state reversion in JavaScript to keep the UI in sync with the database.
 
 #### Known Limitation (Drag-and-Drop Revert)
 **Limitation:** If the API call fails, the UI correctly reverts the card and shows an error toast. However, because it uses `evt.from.appendChild(evt.item)`, the card is placed at the **bottom** of the original column, not at its exact previous index. A future iteration will use `evt.oldIndex` to reinsert it at the exact position.
@@ -67,6 +69,6 @@ The tests cover:
 **Decision:** I used a PHP Enum (`App\Enums\LeadStatus`) as the single source of truth for pipeline stages. Both the validation rules and the UI board read directly from this Enum.
 **Trade-off:** This prevents mismatch bugs and allows for static analysis. The trade-off is a slight increase in indirection; developers must look at the Enum class to understand the pipeline flow.
 
-### 8. Follow-up Reminders Architecture (Task 3 Decision)
-**Decision:** Reminders are stored in the `leads` table, grouped at the Database level using SQL `whereDate` and an index on `follow_up_date`. To mark a call as done without deleting the reminder, I added a boolean `follow_up_completed`. I built a 4-column dashboard (Overdue, Today, Upcoming, Unscheduled).
+### 7. Follow-up Reminders Architecture (Task 3 Decision)
+**Decision:** Reminders are stored in the `leads` table, grouped at the Database level using SQL `whereDate` and an index on `follow_up_date`. To mark a call as done, I added a boolean `follow_up_completed`. I built a 4-column dashboard (Overdue, Today, Upcoming, Unscheduled).
 **Trade-off (The History Gap):** Using a boolean is lightweight and perfect for showing active reminders. The cost, however, is that we lose history. Once a lead is marked as done, we only know the *current* status, not the full timeline of past calls. If AutoFix Workshop needs a full interaction log, this boolean approach will not scale, and we will need to migrate to a `follow_up_logs` table (One-to-Many relationship) in a future iteration.
