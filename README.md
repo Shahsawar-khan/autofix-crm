@@ -71,7 +71,7 @@ The tests cover:
 
 ### 7. Follow-up Reminders Architecture (Task 3 Decision)
 **Decision:** I chose to store reminders directly in the `leads` table using a boolean `follow_up_completed`, rather than creating a separate `follow_up_logs` table. I also used a database index on `follow_up_date` and SQL `whereDate` for filtering.
-**Trade-off:** This approach is extremely fast and keeps the code simple, but the **cost is that we lose history**. Once a lead is marked as done, we only know the current status, not the full timeline of past calls. If AutoFix Workshop requires a full interaction log in the future, we will have to migrate to a separate logs table.
+**Trade-off (The History Gap):** This approach is extremely fast and keeps the code simple, but the **cost is that we lose history**. A boolean only tells us *if* a follow-up was completed, but it does not tell us **when** it was completed. Once marked as done, we only know the current status, not the full timeline of past calls. If AutoFix Workshop requires a full interaction log (especially necessary for Task 4's email logging), we will have to migrate to a separate `follow_up_logs` table that tracks timestamps.
 
 #### Security Note (IDOR Protection)
 **Note:** The API routes (e.g., `/follow-up/complete`) accept the lead ID directly from the URL. To prevent unauthorized access or crashes from invalid IDs, the controller uses Laravel's **Route Model Binding** (`Lead $lead`). This automatically returns a **404 Not Found** if the ID does not exist. In a future task with authentication, we will scope this further so users can only modify their own leads.
