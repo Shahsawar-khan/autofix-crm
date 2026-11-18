@@ -144,4 +144,53 @@ class LeadTest extends TestCase
         $response->assertStatus(422)
                  ->assertJsonValidationErrors(['follow_up_date']);
     }
+
+        // ==========================================
+    // TASK 3: DASHBOARD BUCKETS & MARK DONE TESTS
+    // ==========================================
+    
+    public function test_reminders_dashboard_shows_overdue_lead()
+    {
+        $contact = \App\Models\Contact::create(['name' => 'Overdue Test', 'phone' => '+923001112233']);
+        
+        // 1. Set follow-up date to yesterday (Overdue)
+        $lead = $contact->leads()->create([
+            'make' => 'Honda', 'model' => 'Civic', 'year' => 2020, 'license_plate' => 'OVD-001', 'service_needed' => 'Oil Change', 'status' => 'New',
+            'follow_up_date' => now()->subDay()->format('Y-m-d'),
+            'follow_up_completed' => false
+        ]);
+
+        // 2. Hit the dashboard
+        $response = $this->get('/reminders');
+        
+        // 3. Assert it appears in the dashboard
+        $response->assertStatus(200);
+        $response->assertSee('Overdue Test');
+        $response->assertSee('OVD-001');
+    }
+
+    public function test_marking_follow_up_done_removes_lead_from_dashboard()
+    {
+        $contact = \App\Models\Contact::create(['name' => 'Done Test', 'phone' => '+923001112244']);
+        $lead = $contact->leads()->create([
+            'make' => 'Toyota', 'model' => 'Yaris', 'year' => 2021, 'license_plate' => 'DON-002', 'service_needed' => 'Tuning', 'status' => 'New',
+            'follow_up_date' => now()->format('Y-m-d'), // Today
+            'follow_up_completed' => false
+        ]);
+
+        // 1. Assert it is visible first
+        $this->get('/reminders')->assertSee('Done Test');
+
+        // 2. Hit the Mark Done API
+        $this->patchJson("/api/leads/{$lead->id}/follow-up/complete")->assertStatus(200);
+
+        // 3. Hit dashboard again, assert it's gone
+        $this->get('/reminders')->assertDontSee('Done Test');
+    }
+
+    public function test_marking_invalid_lead_id_returns_404_not_500()
+    {
+        // IDOR Protection: Invalid ID should return 404 (thanks to Route Model Binding)
+        $this->patchJson("/api/leads/999999/follow-up/complete")->assertStatus(404);
+    }
 }
