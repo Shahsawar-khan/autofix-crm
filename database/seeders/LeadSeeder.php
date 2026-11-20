@@ -5,12 +5,37 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Contact;
 use App\Models\Lead;
+use App\Models\EmailTemplate;
 use App\Enums\LeadStatus;
 
 class LeadSeeder extends Seeder
 {
     public function run(): void
     {
+        // ==========================================
+        // 1. REALISTIC EMAIL TEMPLATES (Task 4)
+        // ==========================================
+        EmailTemplate::create([
+            'name' => 'Quote Approved',
+            'subject' => 'Your Repair Quote is Approved',
+            'body' => 'Hi {customer_name}, your quote for {vehicle} is approved. Total estimated cost: {amount}. We will notify you when it is ready.'
+        ]);
+        
+        EmailTemplate::create([
+            'name' => 'Car Ready for Pickup',
+            'subject' => 'Your Vehicle is Ready!',
+            'body' => 'Great news {customer_name}! Your {vehicle} (Plate: {plate}) is ready for pickup. Total bill: {amount}.'
+        ]);
+
+        EmailTemplate::create([
+            'name' => 'Follow-up Call',
+            'subject' => 'Checking in on your vehicle',
+            'body' => 'Hi {customer_name}, we tried calling you regarding your {vehicle}. Please let us know when you are available.'
+        ]);
+
+        // ==========================================
+        // 2. LEADS & CONTACTS
+        // ==========================================
         $leadsData = [
             // --- NEW (3) ---
             ['name' => 'Ali Khan', 'phone' => '+923001234567', 'make' => 'Honda', 'model' => 'Civic', 'year' => 2018, 'plate' => 'LEB-1234', 'job' => 'Brake Pad Replacement', 'status' => LeadStatus::NEW],
@@ -39,9 +64,13 @@ class LeadSeeder extends Seeder
         ];
 
         foreach ($leadsData as $index => $data) {
+            // Contact banate waqt email bhi add kar rahe hain
             $contact = Contact::firstOrCreate(
                 ['phone' => $data['phone']],
-                ['name' => $data['name']]
+                [
+                    'name' => $data['name'],
+                    'email' => strtolower(str_replace(' ', '', $data['name'])) . '@example.com'
+                ]
             );
 
             $followUpDate = null;

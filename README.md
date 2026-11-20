@@ -75,3 +75,8 @@ The tests cover:
 
 #### Security Note (IDOR Protection)
 **Note:** The API routes (e.g., `/follow-up/complete`) accept the lead ID directly from the URL. To prevent unauthorized access or crashes from invalid IDs, the controller uses Laravel's **Route Model Binding** (`Lead $lead`). This automatically returns a **404 Not Found** if the ID does not exist. In a future task with authentication, we will scope this further so users can only modify their own leads.
+
+### 9. Email Logs & Templates Architecture (Task 4 Decision)
+**Decision:** I stored the exact `subject` and `body` text inside the `email_logs` table, rather than just storing a `template_id` reference. Additionally, I chose to simulate email sending (logging to the database) instead of integrating a real SMTP server for this task.
+**Trade-off (Data Duplication & Mocking):** Storing the full text duplicates data and increases database size, but it creates an **immutable audit trail**. If a manager edits or deletes a template later, the log will still show exactly what was sent to the customer at that specific time. The `template_id` is kept as a nullable foreign key with `onDelete('set null')` so deleting a template doesn't break the history. 
+Regarding the mocking: Skipping real SMTP allows the client to test the CRM instantly without configuring Mailgun/SMTP credentials. The trade-off is that no real email actually leaves the server yet. To fix this in production, we would implement Laravel's `Mail::to()->send()` and a Mailtrap/SMTP setup, keeping the logging logic intact.
