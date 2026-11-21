@@ -12,6 +12,7 @@
             <div class="space-x-4">
                 <a href="/emails" class="text-blue-600 hover:underline">View Logs</a>
                 <a href="/pipeline" class="text-blue-600 hover:underline">Back to Pipeline</a>
+                <a href="/dashboard" class="text-sm font-semibold text-gray-700 hover:text-blue-600 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg transition">📊 Dashboard</a>
             </div>
         </div>
 

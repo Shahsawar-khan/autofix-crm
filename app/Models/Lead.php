@@ -21,6 +21,7 @@ class Lead extends Model
         'follow_up_date',   // <-- Naya
         'follow_up_notes',  // <-- Naya
         'follow_up_completed',
+        'total_amount',
     ];
 
     // Enum Casting (Single source of truth)
@@ -28,6 +29,7 @@ class Lead extends Model
         'status' => LeadStatus::class,
         'follow_up_date' => 'date', // <-- Date cast kiya taake Carbon object milay
         'follow_up_completed' => 'boolean',
+        'total_amount' => 'decimal:2',
     ];
 
     public function contact()

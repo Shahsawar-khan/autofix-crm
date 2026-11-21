@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/leads', [LeadController::class, 'index']);
 Route::post('/leads', [LeadController::class, 'store']);
@@ -14,3 +15,5 @@ Route::patch('/leads/{lead}/follow-up/complete', [App\Http\Controllers\LeadContr
 Route::get('/templates', [EmailController::class, 'getTemplates']);
 Route::get('/leads/{lead}/emails', [EmailController::class, 'getLogs']);
 Route::post('/emails/send', [EmailController::class, 'sendEmail']);
+
+Route::get('/dashboard/metrics', [DashboardController::class, 'getMetrics']);

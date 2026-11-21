@@ -17,6 +17,7 @@
             </h1>
             <div class="flex gap-4">
                 <a href="/pipeline" class="text-sm font-semibold text-gray-600 hover:text-blue-600 bg-gray-50 px-4 py-2 rounded-lg transition border border-gray-200">📋 View Pipeline</a>
+                <a href="/dashboard" class="text-sm font-semibold text-gray-700 hover:text-blue-600 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg transition">📊 Dashboard</a>
             </div>
         </div>
     </nav>

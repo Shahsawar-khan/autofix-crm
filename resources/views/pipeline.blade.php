@@ -24,6 +24,7 @@
                 <span class="text-blue-600">AutoFix</span> Workshop Pipeline
             </h1>
             <div class="flex gap-3">
+                <a href="/dashboard" class="text-sm font-semibold text-gray-700 hover:text-blue-600 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg transition">📊 Dashboard</a>
                 <a href="/reminders" class="text-sm font-semibold text-orange-600 hover:text-orange-800 bg-orange-50 px-4 py-2 rounded-lg transition">⏰ Reminders</a>
                 <a href="/emails" class="text-sm font-semibold text-gray-700 hover:text-blue-600 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg transition">📧 Email Logs</a>
                 <a href="/templates" class="text-sm font-semibold text-gray-700 hover:text-blue-600 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg transition">📝 Templates</a>
