@@ -84,3 +84,13 @@ Regarding the mocking: Skipping real SMTP allows the client to test the CRM inst
 ### 10. Sales Dashboard Architecture (Task 5 Decision)
 **Decision:** I implemented the Sales Dashboard by running SQL aggregate functions (`SUM`, `COUNT`, `GROUP BY`) at the database level, rather than loading all leads into PHP and calculating the metrics in memory. I used **Chart.js** for the frontend data visualization.
 **Trade-off:** Performing aggregations in SQL is highly efficient and ensures the dashboard loads instantly, even with tens of thousands of records. The trade-off is that SQLite has limited support for advanced analytical functions compared to a dedicated data warehouse (like BigQuery). If the workshop needs complex time-series forecasting or multi-dimensional reporting in the future, we would need to migrate the database or set up a data pipeline.
+
+## 📸 Project Overview & Screenshots
+This CRM is a complete end-to-end solution for AutoFix Workshop.
+- **Pipeline Board:** Drag-and-drop Kanban board for tracking car repairs.
+- **Dashboard:** Real-time revenue and job metrics using Chart.js.
+- **Email Logs:** Integrated templating system to email customers.
+- **Reminders:** Follow-up tracking system.
+
+*(Replace this text with actual screenshots of your Pipeline, Dashboard, and Reminders pages before final submission)*
+> **Client Handover Guide:** Please refer to [HANDOVER.md](HANDOVER.md) for a step-by-step guide on how the workshop should use this CRM.

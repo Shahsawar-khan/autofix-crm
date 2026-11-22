@@ -124,4 +124,37 @@ class LeadController extends Controller
             'message' => 'Follow-up marked as completed'
         ], 200);
     }
+
+        // 1. Form dikhane ke liye
+    public function createWeb()
+    {
+        return view('leads.create');
+    }
+
+    // 2. Form ka data save karne ke liye
+    public function storeWeb(StoreLeadRequest $request)
+    {
+        // Contact find ya create karein
+        $contact = Contact::firstOrCreate(
+            ['phone' => $request->phone],
+            [
+                'name' => $request->customer_name,
+                'email' => $request->email ?? null,
+            ]
+        );
+
+        // Lead create karein
+        $contact->leads()->create([
+            'make' => $request->make,
+            'model' => $request->model,
+            'year' => $request->year,
+            'license_plate' => $request->license_plate,
+            'service_needed' => $request->service_needed,
+            'total_amount' => $request->total_amount ?? 0, // Agar form mein amount daala ho
+            'status' => 'New',
+            'follow_up_date' => null,
+        ]);
+
+        return redirect('/pipeline')->with('success', 'New Lead added successfully!');
+    }
 }
