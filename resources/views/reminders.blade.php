@@ -9,24 +9,23 @@
 </head>
 <body class="h-screen flex flex-col">
 
-    <!-- Header -->
+    <!-- Header (Responsive) -->
     <nav class="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
-        <div class="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
                 <span class="text-blue-600">AutoFix</span> Follow-up Reminders
             </h1>
-            <div class="flex gap-4">
-                <a href="/pipeline" class="text-sm font-semibold text-gray-600 hover:text-blue-600 bg-gray-50 px-4 py-2 rounded-lg transition border border-gray-200">📋 View Pipeline</a>
-                <a href="/dashboard" class="text-sm font-semibold text-gray-700 hover:text-blue-600 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg transition">📊 Dashboard</a>
+            <div class="flex flex-wrap justify-center gap-2">
+                <a href="/dashboard" class="text-xs md:text-sm font-semibold text-gray-700 hover:text-blue-600 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg transition">📊 Dashboard</a>
+                <a href="/pipeline" class="text-xs md:text-sm font-semibold text-gray-600 hover:text-blue-600 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg transition">📋 View Pipeline</a>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="max-w-[1600px] mx-auto px-6 py-8 w-full flex-1 overflow-y-auto">
+    <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-8 w-full flex-1 overflow-y-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            <!-- 1. Overdue Column (Red) -->
+            <!-- Overdue -->
             <div class="bg-white rounded-xl shadow-sm border-t-4 border-red-500 flex flex-col">
                 <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-red-50/50 rounded-t-lg">
                     <h2 class="font-bold text-red-700 uppercase text-sm tracking-wider flex items-center gap-2">🚨 Overdue</h2>
@@ -40,14 +39,10 @@
                                 <div class="text-[10px] font-bold text-red-600 bg-red-50 px-2 py-1 rounded">{{ $lead->follow_up_date->format('M d, Y') }}</div>
                             </div>
                             <div class="text-xs text-slate-600 mb-2">🚗 {{ $lead->make }} {{ $lead->model }} ({{ $lead->license_plate }})</div>
-                            <div class="text-xs bg-slate-50 p-2 rounded text-slate-700 border border-slate-100">
-                                📝 {{ $lead->follow_up_notes ?? 'No notes provided' }}
-                            </div>
+                            <div class="text-xs bg-slate-50 p-2 rounded text-slate-700 border border-slate-100">📝 {{ $lead->follow_up_notes ?? 'No notes provided' }}</div>
                             <div class="mt-4 flex justify-between items-center border-t border-slate-100 pt-3">
                                 <div class="text-[11px] text-slate-500 font-medium">📞 {{ $lead->contact->phone }}</div>
-                                <button onclick="markDone({{ $lead->id }})" class="text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-3 py-1.5 rounded transition shadow-sm">
-                                    ✓ Mark Done
-                                </button>
+                                <button onclick="markDone({{ $lead->id }})" class="text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-3 py-1.5 rounded transition shadow-sm">✓ Mark Done</button>
                             </div>
                         </div>
                     @empty
@@ -56,7 +51,7 @@
                 </div>
             </div>
 
-            <!-- 2. Today Column (Yellow) -->
+            <!-- Today -->
             <div class="bg-white rounded-xl shadow-sm border-t-4 border-yellow-500 flex flex-col">
                 <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-yellow-50/50 rounded-t-lg">
                     <h2 class="font-bold text-yellow-700 uppercase text-sm tracking-wider flex items-center gap-2">📅 Today</h2>
@@ -70,14 +65,10 @@
                                 <div class="text-[10px] font-bold text-yellow-600 bg-yellow-50 px-2 py-1 rounded">Today</div>
                             </div>
                             <div class="text-xs text-slate-600 mb-2">🚗 {{ $lead->make }} {{ $lead->model }} ({{ $lead->license_plate }})</div>
-                            <div class="text-xs bg-slate-50 p-2 rounded text-slate-700 border border-slate-100">
-                                📝 {{ $lead->follow_up_notes ?? 'No notes provided' }}
-                            </div>
+                            <div class="text-xs bg-slate-50 p-2 rounded text-slate-700 border border-slate-100">📝 {{ $lead->follow_up_notes ?? 'No notes provided' }}</div>
                             <div class="mt-4 flex justify-between items-center border-t border-slate-100 pt-3">
                                 <div class="text-[11px] text-slate-500 font-medium">📞 {{ $lead->contact->phone }}</div>
-                                <button onclick="markDone({{ $lead->id }})" class="text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-3 py-1.5 rounded transition shadow-sm">
-                                    ✓ Mark Done
-                                </button>
+                                <button onclick="markDone({{ $lead->id }})" class="text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-3 py-1.5 rounded transition shadow-sm">✓ Mark Done</button>
                             </div>
                         </div>
                     @empty
@@ -86,7 +77,7 @@
                 </div>
             </div>
 
-            <!-- 3. Upcoming Column (Green) -->
+            <!-- Upcoming -->
             <div class="bg-white rounded-xl shadow-sm border-t-4 border-green-500 flex flex-col">
                 <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-green-50/50 rounded-t-lg">
                     <h2 class="font-bold text-green-700 uppercase text-sm tracking-wider flex items-center gap-2">⏳ Upcoming</h2>
@@ -100,14 +91,10 @@
                                 <div class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded">{{ $lead->follow_up_date->format('M d, Y') }}</div>
                             </div>
                             <div class="text-xs text-slate-600 mb-2">🚗 {{ $lead->make }} {{ $lead->model }} ({{ $lead->license_plate }})</div>
-                            <div class="text-xs bg-slate-50 p-2 rounded text-slate-700 border border-slate-100">
-                                📝 {{ $lead->follow_up_notes ?? 'No notes provided' }}
-                            </div>
+                            <div class="text-xs bg-slate-50 p-2 rounded text-slate-700 border border-slate-100">📝 {{ $lead->follow_up_notes ?? 'No notes provided' }}</div>
                             <div class="mt-4 flex justify-between items-center border-t border-slate-100 pt-3">
                                 <div class="text-[11px] text-slate-500 font-medium">📞 {{ $lead->contact->phone }}</div>
-                                <button onclick="markDone({{ $lead->id }})" class="text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-3 py-1.5 rounded transition shadow-sm">
-                                    ✓ Mark Done
-                                </button>
+                                <button onclick="markDone({{ $lead->id }})" class="text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-3 py-1.5 rounded transition shadow-sm">✓ Mark Done</button>
                             </div>
                         </div>
                     @empty
@@ -116,7 +103,7 @@
                 </div>
             </div>
 
-            <!-- 4. Unscheduled Column (Gray) -->
+            <!-- Unscheduled -->
             <div class="bg-white rounded-xl shadow-sm border-t-4 border-gray-500 flex flex-col">
                 <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-lg">
                     <h2 class="font-bold text-gray-700 uppercase text-sm tracking-wider flex items-center gap-2">⚠️ Unscheduled</h2>
@@ -130,14 +117,10 @@
                                 <div class="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded">No Date</div>
                             </div>
                             <div class="text-xs text-slate-600 mb-2">🚗 {{ $lead->make }} {{ $lead->model }} ({{ $lead->license_plate }})</div>
-                            <div class="text-xs bg-slate-50 p-2 rounded text-slate-700 border border-slate-100">
-                                📝 {{ $lead->service_needed }}
-                            </div>
+                            <div class="text-xs bg-slate-50 p-2 rounded text-slate-700 border border-slate-100">📝 {{ $lead->service_needed }}</div>
                             <div class="mt-4 flex justify-between items-center border-t border-slate-100 pt-3">
                                 <div class="text-[11px] text-slate-500 font-medium">📞 {{ $lead->contact->phone }}</div>
-                                <button onclick="markDone({{ $lead->id }})" class="text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-3 py-1.5 rounded transition shadow-sm">
-                                    ✓ Mark Done
-                                </button>
+                                <button onclick="markDone({{ $lead->id }})" class="text-xs font-bold text-white bg-green-500 hover:bg-green-600 px-3 py-1.5 rounded transition shadow-sm">✓ Mark Done</button>
                             </div>
                         </div>
                     @empty
@@ -149,29 +132,14 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script>
         function markDone(leadId) {
-            console.log('Button clicked for Lead ID:', leadId);
-            
             fetch(`/api/leads/${leadId}/follow-up/complete`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => {
-                if(response.ok) {
-                    window.location.reload(); 
-                } else {
-                    alert('API Error: ' + response.status);
-                }
-            })
-            .catch(error => {
-                alert('Network Error: ' + error);
-            });
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            }).then(response => {
+                if(response.ok) window.location.reload(); else alert('API Error: ' + response.status);
+            }).catch(error => alert('Network Error: ' + error));
         }
     </script>
 </body>

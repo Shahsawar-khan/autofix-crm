@@ -5,32 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoFix Workshop - Sales Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-50 font-sans antialiased h-screen flex flex-col">
 
-    <!-- Header -->
+    <!-- Header (Responsive) -->
     <nav class="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
-        <div class="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
                 <span class="text-blue-600">AutoFix</span> Sales Dashboard
             </h1>
-            <div class="flex gap-2">
-                <a href="/dashboard" class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-2 rounded-lg border border-blue-100">📊 Dashboard</a>
-                <a href="/pipeline" class="text-sm font-semibold text-gray-600 hover:text-blue-600 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg transition">📋 Pipeline</a>
-                <a href="/reminders" class="text-sm font-semibold text-gray-600 hover:text-orange-600 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg transition">⏰ Reminders</a>
-                <a href="/emails" class="text-sm font-semibold text-gray-600 hover:text-blue-600 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg transition">📧 Logs</a>
+            <div class="flex flex-wrap justify-center gap-2">
+                <a href="/dashboard" class="text-xs md:text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-2 rounded-lg border border-blue-100">📊 Dashboard</a>
+                <a href="/pipeline" class="text-xs md:text-sm font-semibold text-gray-600 hover:text-blue-600 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg transition">📋 Pipeline</a>
+                <a href="/reminders" class="text-xs md:text-sm font-semibold text-gray-600 hover:text-orange-600 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg transition">⏰ Reminders</a>
+                <a href="/emails" class="text-xs md:text-sm font-semibold text-gray-600 hover:text-blue-600 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg transition">📧 Logs</a>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="max-w-[1600px] mx-auto px-6 py-8 w-full flex-1 overflow-y-auto">
+    <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-8 w-full flex-1 overflow-y-auto">
         
         <!-- KPI Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Total Revenue -->
             <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 shadow-sm text-white">
                 <div class="flex justify-between items-start">
                     <div>
@@ -40,8 +37,6 @@
                     <div class="text-4xl opacity-50">💰</div>
                 </div>
             </div>
-
-            <!-- Pipeline Value -->
             <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-6 shadow-sm text-white">
                 <div class="flex justify-between items-start">
                     <div>
@@ -51,8 +46,6 @@
                     <div class="text-4xl opacity-50">📈</div>
                 </div>
             </div>
-
-            <!-- Pending Reminders -->
             <div class="bg-gradient-to-br from-orange-500 to-red-500 rounded-xl p-6 shadow-sm text-white">
                 <div class="flex justify-between items-start">
                     <div>
@@ -62,8 +55,6 @@
                     <div class="text-4xl opacity-50">⏰</div>
                 </div>
             </div>
-
-            <!-- Total Jobs -->
             <div class="bg-gradient-to-br from-purple-500 to-fuchsia-600 rounded-xl p-6 shadow-sm text-white">
                 <div class="flex justify-between items-start">
                     <div>
@@ -84,14 +75,14 @@
                 </div>
             </div>
 
-            <!-- Recent Emails / Activity Column -->
+            <!-- Recent Emails Column -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 lg:col-span-2 flex flex-col">
                 <div class="p-6 border-b border-gray-100 flex justify-between items-center">
                     <h2 class="text-lg font-bold text-gray-800">Recent Email Activity</h2>
                     <a href="/emails" class="text-sm font-semibold text-blue-600 hover:underline">View All</a>
                 </div>
-                <div class="flex-1 p-0 overflow-y-auto">
-                    <table class="w-full text-left border-collapse">
+                <div class="flex-1 p-0 overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[500px]">
                         <tbody class="divide-y divide-gray-100">
                             @forelse($recentEmails as $log)
                                 <tr class="hover:bg-slate-50 transition">
@@ -106,7 +97,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td class="p-6 text-center text-gray-500">No emails sent yet.</td></tr>
+                                <tr><td colspan="3" class="p-6 text-center text-gray-500">No emails sent yet.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -116,26 +107,17 @@
 
     </div>
 
-    <!-- Chart.js Script -->
     <script>
-        // Data pass from PHP to JS
         const statusLabels = @json($jobsByStatus->keys());
         const statusData = @json($jobsByStatus->values());
-
         const ctx = document.getElementById('statusChart').getContext('2d');
         new Chart(ctx, {
-            type: 'doughnut', // Ya 'bar' bhi use kar sakte hain
+            type: 'doughnut',
             data: {
                 labels: statusLabels,
                 datasets: [{
                     data: statusData,
-                    backgroundColor: [
-                        '#3b82f6', // New (Blue)
-                        '#eab308', // Quoted (Yellow)
-                        '#a855f7', // Booked (Purple)
-                        '#f97316', // In Repair (Orange)
-                        '#22c55e'  // Completed (Green)
-                    ],
+                    backgroundColor: ['#3b82f6', '#eab308', '#a855f7', '#f97316', '#22c55e'],
                     borderWidth: 0,
                     hoverOffset: 4
                 }]
@@ -144,15 +126,9 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            font: { family: "'Inter', sans-serif", size: 12 }
-                        }
-                    }
+                    legend: { position: 'bottom', labels: { padding: 20, font: { family: "'Inter', sans-serif", size: 12 } } }
                 },
-                cutout: '70%' // Doughnut hole size
+                cutout: '70%'
             }
         });
     </script>
